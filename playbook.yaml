@@ -1,0 +1,18 @@
+---
+- name: Récupérer la MAC address-table depuis des switchs IOS
+  hosts: switches_ios
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: Exécuter la commande show mac address-table
+      ios_command:
+        commands:
+          - show mac address-table
+      register: mac_output
+
+    - name: Sauvegarder la sortie dans un fichier
+      copy:
+        content: "{{ mac_output.stdout[0] }}"
+        dest: "backups/{{ inventory_hostname }}_mac_address_table.txt"
+
